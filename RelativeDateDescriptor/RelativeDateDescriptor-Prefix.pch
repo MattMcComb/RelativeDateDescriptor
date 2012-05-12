@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'RelativeDateDescriptor' target in the 'RelativeDateDescriptor' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif
