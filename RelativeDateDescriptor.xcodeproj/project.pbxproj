@@ -30,15 +30,15 @@
 /* Begin PBXFileReference section */
 		D18194D8155E7C5100EE4F96 /* libRelativeDateDescriptor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRelativeDateDescriptor.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D18194DB155E7C5100EE4F96 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		D18194DF155E7C5100EE4F96 /* RelativeDateDescriptor-Prefix.pch */ = {isa = PBXFileReference; path = "RelativeDateDescriptor-Prefix.pch"; sourceTree = "<group>"; };
-		D18194E0155E7C5100EE4F96 /* RelativeDateDescriptor.h */ = {isa = PBXFileReference; path = RelativeDateDescriptor.h; sourceTree = "<group>"; };
+		D18194DF155E7C5100EE4F96 /* RelativeDateDescriptor-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RelativeDateDescriptor-Prefix.pch"; sourceTree = "<group>"; };
+		D18194E0155E7C5100EE4F96 /* RelativeDateDescriptor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RelativeDateDescriptor.h; sourceTree = "<group>"; };
 		D18194E1155E7C5100EE4F96 /* RelativeDateDescriptor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RelativeDateDescriptor.m; sourceTree = "<group>"; };
 		D18194E8155E7C5200EE4F96 /* RelativeDateDescriptorTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelativeDateDescriptorTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D18194E9155E7C5200EE4F96 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		D18194EB155E7C5200EE4F96 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		D18194F3155E7C5200EE4F96 /* RelativeDateDescriptorTests-Info.plist */ = {isa = PBXFileReference; path = "RelativeDateDescriptorTests-Info.plist"; sourceTree = "<group>"; };
+		D18194F3155E7C5200EE4F96 /* RelativeDateDescriptorTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RelativeDateDescriptorTests-Info.plist"; sourceTree = "<group>"; };
 		D18194F5155E7C5200EE4F96 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		D18194F7155E7C5200EE4F96 /* RelativeDateDescriptorTests.h */ = {isa = PBXFileReference; path = RelativeDateDescriptorTests.h; sourceTree = "<group>"; };
+		D18194F7155E7C5200EE4F96 /* RelativeDateDescriptorTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RelativeDateDescriptorTests.h; sourceTree = "<group>"; };
 		D18194F8155E7C5200EE4F96 /* RelativeDateDescriptorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RelativeDateDescriptorTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
