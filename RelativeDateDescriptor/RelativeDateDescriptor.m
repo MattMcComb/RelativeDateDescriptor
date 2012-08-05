@@ -41,17 +41,25 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
 - (NSString*)applyFormat:(NSString*)descriptionFormat toRelativeDifference:(NSString*)difference;
 - (NSString*)formOfDateQuantifier:(NSString*)quantifier forCount:(NSInteger)count;
 
+// Time unit handling
+- (BOOL)expressMostSignificantUnitOnly;
+- (BOOL)isExpressedUnit:(RDDTimeUnit)timeUnit;
+- (NSArray*)expressedTimeUnits;
+- (RDDTimeUnit)mostSignificantUnitForTimeDifference:(NSDecimalNumber*)separaionInSeconds;
+
 @end
 
 @implementation RelativeDateDescriptor
 
 @synthesize priorDateDescriptionFormat;
 @synthesize postDateDescriptionFormat;
+@synthesize expressedUnits = _expressedUnits;
 
 - (id)initWithPriorDateDescriptionFormat:(NSString*)priorFormat postDateDescriptionFormat:(NSString*)postFormat; {
     if (self = [super init]) {
         [self setPriorDateDescriptionFormat:priorFormat];
         [self setPostDateDescriptionFormat:postFormat];
+        [self setExpressedUnits:RDDTimeUnitMostSignificant];
     }
     return self;
 }
@@ -73,38 +81,72 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
     separationInSeconds = isPriorDate ? -separationInSeconds : separationInSeconds;
     
     NSDecimalNumber *preciseSeparation = (NSDecimalNumber*)[NSDecimalNumber numberWithDouble:separationInSeconds];
-    NSDecimalNumber *preciseSeparationInMilliSeconds = [preciseSeparation decimalNumberByMultiplyingByPowerOf10:3];
+    
+    NSArray *expressedTimeUnits = [self expressedTimeUnits];
     
     NSString *intervalDescription;
+    if ([self expressMostSignificantUnitOnly] || [expressedTimeUnits count] == 0) {
+        RDDTimeUnit mostSignificantUnit = [self mostSignificantUnitForTimeDifference:preciseSeparation];
+        expressedTimeUnits = [NSArray arrayWithObject:[NSNumber numberWithInt:mostSignificantUnit]];
+    }
+        
+    intervalDescription = [self describeInterval:preciseSeparation usingQuantifiers:expressedTimeUnits];
+    
+    return [NSString stringWithFormat:appropriateDateFormat, intervalDescription];
+}
+
+#pragma mark - 
+#pragma mark - Description Time Unit Handling
+
+- (BOOL)expressMostSignificantUnitOnly {
+    return (_expressedUnits & RDDTimeUnitMostSignificant) == RDDTimeUnitMostSignificant;
+}
+
+- (BOOL)isExpressedUnit:(RDDTimeUnit)timeUnit {
+    return (_expressedUnits & timeUnit) == timeUnit;
+}
+
+- (NSArray*)expressedTimeUnits {
+    NSMutableArray *expressedTimeUnits = [NSMutableArray array];
+    int i = 0;
+    for (int timeUnit = RDDTimeUnitMilliSeconds; timeUnit <= RDDTimeUnitYears; timeUnit = 1 << (i++)) {
+        if ([self isExpressedUnit:timeUnit]) {
+            [expressedTimeUnits addObject:[NSNumber numberWithInt:timeUnit]];
+        }
+    }
+    return expressedTimeUnits;
+}
+
+- (RDDTimeUnit)mostSignificantUnitForTimeDifference:(NSDecimalNumber*)separaionInSeconds {
+    
     RDDTimeUnit appropriateTimeUnit = RDDTimeUnitSeconds;
+    
+    NSDecimalNumber *preciseSeparationInMilliSeconds = [separaionInSeconds decimalNumberByMultiplyingByPowerOf10:3];
     
     if ([self compare:preciseSeparationInMilliSeconds to:kMilliSecondsInASecond] == NSOrderedAscending) {
         appropriateTimeUnit = RDDTimeUnitMilliSeconds;
         
-    } else if ([self compare:preciseSeparation to:kSecondsInAMinute] == NSOrderedAscending) {
+    } else if ([self compare:separaionInSeconds to:kSecondsInAMinute] == NSOrderedAscending) {
         appropriateTimeUnit = RDDTimeUnitSeconds;
         
-    } else if ([self compare:preciseSeparation to:kSecondsInAnHour] == NSOrderedAscending) {
+    } else if ([self compare:separaionInSeconds to:kSecondsInAnHour] == NSOrderedAscending) {
         appropriateTimeUnit = RDDTimeUnitMinutes;
         
-    } else if ([self compare:preciseSeparation to:kSecondsInADay] == NSOrderedAscending) {
+    } else if ([self compare:separaionInSeconds to:kSecondsInADay] == NSOrderedAscending) {
         appropriateTimeUnit = RDDTimeUnitHours;
         
-    } else if ([self compare:preciseSeparation to:kSecondsInAMonth] == NSOrderedAscending) {
+    } else if ([self compare:separaionInSeconds to:kSecondsInAMonth] == NSOrderedAscending) {
         appropriateTimeUnit = RDDTimeUnitDays;
         
-    } else if ([self compare:preciseSeparation to:kSecondsInAYear] == NSOrderedAscending) {
+    } else if ([self compare:separaionInSeconds to:kSecondsInAYear] == NSOrderedAscending) {
         appropriateTimeUnit = RDDTimeUnitMonths;
         
     } else {
         appropriateTimeUnit = RDDTimeUnitYears;
     }
     
-    intervalDescription = [self describeInterval:preciseSeparation UsingQuantifier:appropriateTimeUnit];
-    
-    return [NSString stringWithFormat:appropriateDateFormat, intervalDescription];
+    return appropriateTimeUnit;
 }
-
 
 # pragma mark -
 # pragma mark - 
@@ -126,7 +168,7 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
         case RDDTimeUnitYears:
             return kSecondsInAYear;
         default:
-            break;
+            return 0;
     }
 }
 
@@ -147,7 +189,7 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
         case RDDTimeUnitYears:
             return @"year";
         default:
-            break;
+            return nil;
     }
 }
 
@@ -166,12 +208,41 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
     return [separation compare:intervalAsDecimalNumber];
 }
 
-- (NSString*)describeInterval:(NSDecimalNumber*)interval UsingQuantifier:(RDDTimeUnit)quantifier {
-    double quantiferInterval = [self secondsInTimeUnit:quantifier];
-    int quantifiedInterval = [self preciselyDivide:interval by:quantiferInterval];
-    NSString *timeUnitQuantifier = [self formOfDateQuantifier:[self quantifierForTimeUnit:quantifier]
-                                                     forCount:quantifiedInterval];
-    return [NSString stringWithFormat:@"%i %@", quantifiedInterval, timeUnitQuantifier];
+- (NSString*)describeInterval:(NSDecimalNumber*)interval usingQuantifiers:(NSArray*)quantifiers {
+    
+    NSArray *mostSignificantTimeUnitSort = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
+    NSArray *sortedQuantifiers = [quantifiers sortedArrayUsingDescriptors:[NSArray arrayWithObject:mostSignificantTimeUnitSort]];
+    
+    // Iterate over the list of units and build a description with a component for each unit - as we go we subtract
+    // the magnitude of each unit to get the remaining seconds/interval to be expressed in terms of the following units
+    NSMutableString *intervalDescription = [[NSMutableString alloc] init];
+    NSDecimalNumber *remainingInterval = [interval copy];
+    for (int i = 0; i < [sortedQuantifiers count]; i++) {
+        
+        NSInteger timeUnitQuantifier = [[sortedQuantifiers objectAtIndex:i] integerValue];
+        
+        double secondsInTimeUnit = [self secondsInTimeUnit:timeUnitQuantifier];
+        int intervalInTimeUnit = [self preciselyDivide:remainingInterval by:secondsInTimeUnit];
+        double subtractedSeconds = secondsInTimeUnit * intervalInTimeUnit;
+        
+        NSString *quantifierFormat = [self formOfDateQuantifier:[self quantifierForTimeUnit:timeUnitQuantifier]
+                                                         forCount:intervalInTimeUnit];
+        
+        NSString *intervalDescribedUsingQuanitifer = [NSString stringWithFormat:@"%i %@", intervalInTimeUnit, quantifierFormat];
+        
+        [intervalDescription appendString:intervalDescribedUsingQuanitifer];
+        
+        // Deduct the expressed time from the interval - the resulting time interval will be described in terms of the
+        // remaining time units (if any)
+        remainingInterval = [remainingInterval decimalNumberBySubtracting:(NSDecimalNumber*)[NSDecimalNumber numberWithDouble:subtractedSeconds]];
+        
+        // Place a space between the expressed time units 
+        if (i != [sortedQuantifiers count] - 1) {
+            [intervalDescription appendString:@" "];
+        }
+        
+    }
+    return intervalDescription;
 }
 
 # pragma mark -

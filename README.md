@@ -2,7 +2,7 @@
 
 ## About RelativeDateDescriptor.m
 
-Often when comparing dates it is useful to provide the user with a human readable description of the interval between two dates.  The RelativeDateDescriptor can be used to produce a string based description of the interval between two dates i.e. '10 seconds ago', 'in 5 months' or '1000000 years ago'.
+Often when comparing dates it is useful to provide the user with a human readable description of the interval between two dates.  The RelativeDateDescriptor can be used to produce a string based description of the interval between two dates i.e. '10 seconds ago', '5 hours 32 minutes ago', 'in 5 months' or '1000000 years ago'.
 
 ## Real World Example
 
@@ -21,6 +21,11 @@ Once we hae a RelativeDateDescriptor we can obtain our human readable descriptio
 
 When describing a date we do so in relation to another date i.e. that specified by the relativeTo: parameter, the reference date.  If the date being described (describeDate:) occurs before the reference date (relativeTo:) the prior date format as specified in the init method will be used, and if later the post date format will be used.
 
+By default the RelativeDateDescriptor expresses the time differences using the most significant unit of time.  As an example if the two dates are 69 seconds apart the descriptor would return '1 minute'.  If you wish to define the time units in which the description will be expressed you can set the expressedUnits property, which takes a bitwise OR'd list of RDDTimeUnit constants i.e.
+    
+    [aRelativeDateDescriptorInstance setExpressedUnits:RDDTimeUnitHours|RDDTimeUnitMinutes];
+
+
 ## Example Output
 
     RelativeDateDescriptor *descriptor = [[RelativeDateDescriptor alloc] initWithPriorDateDescriptionFormat:@"%@ ago" postDateDescriptionFormat:@"in %@"];
@@ -35,6 +40,10 @@ When describing a date we do so in relation to another date i.e. that specified 
     [descriptor describeDate:date2 relativeTo:date1]; // Returns '18 seconds ago'
     descriptor describeDate:date1 relativeTo:date2];  // Returns 'in 18 seconds'
 
+    // date1: 1st January 2000, 00:12:18
+    // date2: 1st January 2000, 09:45:39
+    [descriptor describeDate:date2 relativeTo:date1]; // Returns 'in 9 hours 33 minutes 21 seconds'
+
 ## Using RelativeDateDescriptor
 
 The easiest way to use the library is to simply add the classes (RelativeDateDescriptor.h and RelativeDateDescriptor.m) to your project.  
@@ -42,8 +51,6 @@ The easiest way to use the library is to simply add the classes (RelativeDateDes
 Alternatively, the project can be built as a static library and added to your own project.
 
 ## Things You Should Know
-
-- The current implementation returns only the most significant unit of time in the result i.e. two dates are '5 hours and 3 minutes' apart only the 5 minutes will be taken into account and the returned description would read '5 hours'.  This is intentional, however the option of selecting a most/least significant time quantifier would be nice in the future. 
 
 - The implementation uses NSDecimalNumber rather than floats so the accuracy should be good for fairly large date/time intervals.
 

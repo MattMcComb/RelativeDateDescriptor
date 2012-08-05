@@ -27,13 +27,14 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    RDDTimeUnitMilliSeconds,
-    RDDTimeUnitYears,
-    RDDTimeUnitMonths,
-    RDDTimeUnitDays,
-    RDDTimeUnitHours,
-    RDDTimeUnitMinutes,
-    RDDTimeUnitSeconds
+    RDDTimeUnitMostSignificant  =   1,
+    RDDTimeUnitYears            =   1 << 7,
+    RDDTimeUnitMonths           =   1 << 6,
+    RDDTimeUnitDays             =   1 << 5,
+    RDDTimeUnitHours            =   1 << 4,
+    RDDTimeUnitMinutes          =   1 << 3,
+    RDDTimeUnitSeconds          =   1 << 2,
+    RDDTimeUnitMilliSeconds     =   1 << 1
 } RDDTimeUnit;
 
 
@@ -59,6 +60,12 @@ typedef enum {
 @property (nonatomic, copy) NSString* priorDateDescriptionFormat;
 @property (nonatomic, copy) NSString* postDateDescriptionFormat;
 
+// The units used to describe the date interval - by default the RelativeDateDescriptor will express the interval in the
+// most significant (largest) time unit only.  By specifying a bitwise ORd list of RDDTimeUnit values for this property
+// you can express the time difference in specific units (or unit)
+// i.e. RDDTimeUnitHours|RDDTimeUnitMinutes|RDDTimeUnitSeconds
+@property (nonatomic, assign) NSUInteger expressedUnits;
+
 /* Designated initializer
  *
  * Specify the formats used when describing dates - the prior format is used when the date occurs before the reference
@@ -68,7 +75,6 @@ typedef enum {
  * To return 
  */
 - (id)initWithPriorDateDescriptionFormat:(NSString*)priorFormat postDateDescriptionFormat:(NSString*)postFormat;
-
 
 // Describe the time difference between referenceDate and targetDate in a human readable form
 - (NSString*)describeDate:(NSDate*)targetDate relativeTo:(NSDate*)referenceDate;
