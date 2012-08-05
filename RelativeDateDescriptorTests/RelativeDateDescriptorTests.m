@@ -165,17 +165,6 @@
     STAssertTrue([description isEqualToString:expectedDescription], @"Expected description %@ but got %@", expectedDescription, description);
 }
 
-// Test that if the user specifies the 'RDDTimeUnitMostSignifcant' unit that the description will be described in terms
-// of the most significant unit only, and not the other expressed units
-- (void)testThatMostSignificantUnitIsIgnoredIfPassedAsAnExpressedUnit2 {
-    NSDate *firstDayOfMillenium = [self dateWithYear:2000 month:1 day:1 hour:0 minutes:12 seconds:18];
-    NSDate *twentyNinthDayOfMillenium = [self dateWithYear:2000 month:1 day:1 hour:9 minutes:45 seconds:39];
-    RelativeDateDescriptor *descriptor = [[RelativeDateDescriptor alloc] initWithPriorDateDescriptionFormat:@"%@" postDateDescriptionFormat:@"%@"];
-    [descriptor setExpressedUnits:RDDTimeUnitHours|RDDTimeUnitMinutes|RDDTimeUnitSeconds];
-    NSString *description = [descriptor describeDate:twentyNinthDayOfMillenium relativeTo:firstDayOfMillenium];
-    NSString *expectedDescription = @"28 days";
-    STAssertTrue([description isEqualToString:expectedDescription], @"Expected description %@ but got %@", expectedDescription, description);
-}
 
 // Test that if the expressed units are not valid (0) that the descriptor defaults to using the most significant time
 // unit
