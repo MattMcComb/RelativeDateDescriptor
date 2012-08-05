@@ -131,6 +131,18 @@
                  expectedDescription, description);
 }
 
+- (void)testThatNilIsReturnedWhenRelativeToDateIsNil {
+    RelativeDateDescriptor *descriptor = [[RelativeDateDescriptor alloc] initWithPriorDateDescriptionFormat:@"%@" postDateDescriptionFormat:@"%@"];
+    NSString *description = [descriptor describeDate:[NSDate date] relativeTo:nil];
+    STAssertTrue(description == nil, @"Expected the date description to be nil when the relative to parameter was nil");
+}
+
+- (void)testThatNilIsReturnedWhenDateIsNil {
+    RelativeDateDescriptor *descriptor = [[RelativeDateDescriptor alloc] initWithPriorDateDescriptionFormat:@"%@" postDateDescriptionFormat:@"%@"];
+    NSString *description = [descriptor describeDate:nil relativeTo:[NSDate date]];
+    STAssertTrue(description == nil, @"Expected the date description to be nil when the date parameter was nil");
+}
+
 # pragma mark -
 # pragma mark - Helper methods for building test dates
 

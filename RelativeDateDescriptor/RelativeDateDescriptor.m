@@ -62,6 +62,10 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
 
 - (NSString*)describeDate:(NSDate*)targetDate relativeTo:(NSDate*)referenceDate {
     
+    if (!targetDate || !referenceDate) {
+        return nil;
+    }
+    
     NSTimeInterval separationInSeconds = [targetDate timeIntervalSinceDate:referenceDate];
     
     bool isPriorDate = separationInSeconds < 0;
@@ -70,8 +74,6 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
     
     NSDecimalNumber *preciseSeparation = (NSDecimalNumber*)[NSDecimalNumber numberWithDouble:separationInSeconds];
     NSDecimalNumber *preciseSeparationInMilliSeconds = [preciseSeparation decimalNumberByMultiplyingByPowerOf10:3];
-    
-    
     
     NSString *intervalDescription;
     RDDTimeUnit appropriateTimeUnit = RDDTimeUnitSeconds;
