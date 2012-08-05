@@ -40,9 +40,18 @@ By default the RelativeDateDescriptor expresses the time differences using the m
     [descriptor describeDate:date2 relativeTo:date1]; // Returns '18 seconds ago'
     descriptor describeDate:date1 relativeTo:date2];  // Returns 'in 18 seconds'
 
+    /** 
+      * Examples of using expressedUnits property to define description units **/
+ 
+    RelativeDateDescriptor *timeUnitDescriptor = [[RelativeDateDescriptor alloc] initWithPriorDateDescriptionFormat:@"%@ ago" postDateDescriptionFormat:@"in %@"];
+
+    // Define the units to be used when describing the interval
+    [timeUnitDescriptor setExpressedUnits:RDDTimeUnitHours|RDDTimeUnitMinutes|RDDTimeUnitSeconds];    
+
     // date1: 1st January 2000, 00:12:18
-    // date2: 1st January 2000, 09:45:39
-    [descriptor describeDate:date2 relativeTo:date1]; // Returns 'in 9 hours 33 minutes 21 seconds'
+    // date2: 1st January 2000, 09:45:39 
+    Relative 
+    [timeUnitDescriptor describeDate:date2 relativeTo:date1]; // Returns 'in 9 hours 33 minutes 21 seconds'
 
 ## Using RelativeDateDescriptor
 
