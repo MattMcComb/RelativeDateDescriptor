@@ -30,6 +30,7 @@ const double    kMilliSecondsInASecond = 1000;
 const double    kSecondsInAMinute = 60;
 const double    kSecondsInAnHour  = kSecondsInAMinute * 60;
 const double    kSecondsInADay    = kSecondsInAMinute * 60 * 24;
+const double    kSecondsInAWeek   = kSecondsInADay * 7;
 const double    kSecondsInAMonth  = kSecondsInADay * 30.43;
 const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
 
@@ -135,8 +136,11 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
     } else if ([self compare:separaionInSeconds to:kSecondsInADay] == NSOrderedAscending) {
         appropriateTimeUnit = RDDTimeUnitHours;
         
-    } else if ([self compare:separaionInSeconds to:kSecondsInAMonth] == NSOrderedAscending) {
+    } else if ([self compare:separaionInSeconds to:kSecondsInAWeek] == NSOrderedAscending) {
         appropriateTimeUnit = RDDTimeUnitDays;
+        
+    } else if ([self compare:separaionInSeconds to:kSecondsInAMonth] == NSOrderedAscending) {
+        appropriateTimeUnit = RDDTimeUnitWeeks;
         
     } else if ([self compare:separaionInSeconds to:kSecondsInAYear] == NSOrderedAscending) {
         appropriateTimeUnit = RDDTimeUnitMonths;
@@ -163,6 +167,8 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
             return kSecondsInAnHour;
         case RDDTimeUnitDays:
             return kSecondsInADay;
+        case RDDTimeUnitWeeks:
+            return kSecondsInAWeek;
         case RDDTimeUnitMonths:
             return kSecondsInAMonth;
         case RDDTimeUnitYears:
@@ -186,6 +192,8 @@ const double    kSecondsInAYear   = kSecondsInADay * 356.242199;
             return @"day";
         case RDDTimeUnitMonths:
             return @"month";
+        case RDDTimeUnitWeeks:
+            return @"week";
         case RDDTimeUnitYears:
             return @"year";
         default:

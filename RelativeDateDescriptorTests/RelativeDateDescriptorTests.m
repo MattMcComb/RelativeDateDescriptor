@@ -98,10 +98,20 @@
 
 - (void)testThatDescriptionIsCorrectWhenDatesAreDaysApart {
     NSDate *firstDayOfMillenium = [self dateWithYear:2000 month:0 day:0 hour:0 minutes:0 seconds:0];
-    NSDate *sixthDayOfMillenium = [self dateWithYear:2000 month:0 day:30 hour:0 minutes:0 seconds:0];
+    NSDate *sixthDayOfMillenium = [self dateWithYear:2000 month:0 day:6 hour:0 minutes:0 seconds:0];
     RelativeDateDescriptor *descriptor = [[RelativeDateDescriptor alloc] initWithPriorDateDescriptionFormat:@"%@" postDateDescriptionFormat:@"%@"];
     NSString *description = [descriptor describeDate:sixthDayOfMillenium relativeTo:firstDayOfMillenium];
-    NSString *expectedDescription = @"30 days";
+    NSString *expectedDescription = @"6 days";
+    STAssertTrue([description isEqualToString:expectedDescription], @"Expected description '%@' but got %@",
+                 expectedDescription, description);
+}
+
+- (void)testThatDescriptionIsCorrectWhenDatesAreWeeksApart {
+    NSDate *firstWeekOfMillenium = [self dateWithYear:2000 month:0 day:0 hour:0 minutes:0 seconds:0];
+    NSDate *thirdWeekOfMillenium = [self dateWithYear:2000 month:0 day:22 hour:0 minutes:0 seconds:0];
+    RelativeDateDescriptor *descriptor = [[RelativeDateDescriptor alloc] initWithPriorDateDescriptionFormat:@"%@" postDateDescriptionFormat:@"%@"];
+    NSString *description = [descriptor describeDate:thirdWeekOfMillenium relativeTo:firstWeekOfMillenium];
+    NSString *expectedDescription = @"3 weeks";
     STAssertTrue([description isEqualToString:expectedDescription], @"Expected description '%@' but got %@",
                  expectedDescription, description);
 }

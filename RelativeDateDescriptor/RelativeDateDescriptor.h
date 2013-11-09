@@ -28,8 +28,9 @@
 
 typedef enum {
     RDDTimeUnitMostSignificant  =   1,
-    RDDTimeUnitYears            =   1 << 7,
-    RDDTimeUnitMonths           =   1 << 6,
+    RDDTimeUnitYears            =   1 << 8,
+    RDDTimeUnitMonths           =   1 << 7,
+    RDDTimeUnitWeeks            =   1 << 6,
     RDDTimeUnitDays             =   1 << 5,
     RDDTimeUnitHours            =   1 << 4,
     RDDTimeUnitMinutes          =   1 << 3,
