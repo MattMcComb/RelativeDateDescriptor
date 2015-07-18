@@ -64,4 +64,9 @@ Alternatively, the project can be built as a static library and added to your ow
 - The implementation uses NSDecimalNumber rather than floats so the accuracy should be good for fairly large date/time intervals.
 
 - The project builds as a static library with integrated unit tests - these serve as a useful example for usage of the classes.
+- 
+
+## Licensing
+
+- The project is licensed under the [MIT](http://opensource.org/licenses/MIT) software license. 
 
